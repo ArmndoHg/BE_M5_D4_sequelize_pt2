@@ -12,9 +12,10 @@ import {
 } from "./errorHandlers.js";
 import usersRouter from "./api/users/index.js";
 import reviewsRouter from "./api/reviews/index.js";
+import categoriesRouter from "./api/categories/index.js";
 
 const server = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3002;
 
 //****************************************** MIDDLEWARES ************************************* */
 
@@ -26,6 +27,7 @@ server.use(express.json());
 server.use("/products", productsRouter);
 server.use("/users", usersRouter);
 server.use("/reviews", reviewsRouter);
+server.use("/categories", categoriesRouter);
 
 //****************************************** ERROR HANDLERS ************************************* */
 
