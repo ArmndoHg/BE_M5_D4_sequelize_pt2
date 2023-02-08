@@ -2,6 +2,7 @@ import express from "express";
 import createHttpError from "http-errors";
 import ProductsModel from "./model.js";
 import { Op } from "sequelize";
+import ReviewsModel from "../reviews/model.js";
 
 const productsRouter = express.Router();
 
@@ -30,6 +31,11 @@ productsRouter.get("/", async (req, res, next) => {
     const products = await ProductsModel.findAll({
       where: { ...query },
       attributes: ["id", "name", "description", "price", "category"],
+      include: [
+        {
+          model: ReviewsModel,
+        },
+      ],
     }); // (SELECT) pass an array for the include list
     res.send(products);
   } catch (error) {
@@ -96,6 +102,21 @@ productsRouter.delete("/:productId", async (req, res, next) => {
         )
       );
     }
+  } catch (error) {
+    next(error);
+  }
+});
+
+productsRouter.get("/:productId/reviews", async (req, res, next) => {
+  try {
+    const user = await ProductsModel.findByPk(req.params.productId, {
+      include: {
+        model: ReviewsModel,
+        attributes: ["rating", "title", "content"],
+        where: { title: { [Op.iLike]: "%react%" } },
+      },
+    });
+    res.send(user);
   } catch (error) {
     next(error);
   }
